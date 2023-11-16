@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "自动获取宣讲会信息",
+  "version": "1.0",
+  "icons":{
+    "16":"icon.png",
+    "32":"icon.png",
+    "48":"icon.png"
+  },
+  "description": "自动获取当前页面的宣讲会信息",
+  "browser_action": {
+    "defalut_title":"Get txt"
+  },
+  "background":{
+    "scripts":["bg.js"]
+  },
+  "permissions":[
+    "https://www.job.sjtu.edu.cn/career/*",
+    "tabs"
+  ]
+}
