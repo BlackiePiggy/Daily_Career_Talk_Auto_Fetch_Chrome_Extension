@@ -1,6 +1,3 @@
-// content.js
-// Your JavaScript code to be executed on the current page
-
 // 获取xjhxxConHtm元素
 var xjhxxCon = document.getElementById("xjhxxConHtm");
 
@@ -11,7 +8,7 @@ var userDefinedDate = prompt("请输入日期字符串（例如：11-16）:", "1
 
 var outputString = "";
 
-outputString += "【" + userDefinedDate + "今日宣讲会预告】" + "\n";
+outputString += "【" + userDefinedDate.match(/\d+/g)[0] + "月" + userDefinedDate.match(/\d+/g)[1] + "日" + " 今日宣讲会预告】" + "\n";
 
 // 遍历每个xjhxxList元素
 for (var i = 0; i < xjhxxListElements.length; i++) {
@@ -23,29 +20,31 @@ for (var i = 0; i < xjhxxListElements.length; i++) {
     var dateElement = xjhxxTime.querySelector("div:nth-child(1)");
     var timeElement = xjhxxTime.querySelector("div:nth-child(2)");
 
-    // 提取xjhxxUnits中的元素
-    var xjhxxUnits = xjhxxList.getElementsByClassName("xjhxxUnits");
-    var xjhxxUnitName = xjhxxUnits[0].getElementsByClassName("xjhxxUnitName")[0].textContent.trim();
-    var xjhdz = xjhxxUnits[0].getElementsByClassName("xjhdz")[0].textContent.trim();
-
-    // 提取onclick中的内容
-    var onclickContent = xjhxxList.getAttribute("onclick");
-
-    var xjhxxid = onclickContent.match(/\d+/)[0]
-
-    // 将提取的信息输出到txt文本中
-    // 你可以根据需要将信息拼接成字符串，然后写入到txt文件中
-    // 这里仅作为演示，具体的写入文件操作可能需要根据你的环境和需求进行调整
-    // 示例：将信息拼接成字符串
     if (dateElement.textContent.trim() == userDefinedDate)
     {
-        outputString +=String.fromCodePoint(0x245F + i + 1);
+        // 提取xjhxxUnits中的元素
+        var xjhxxUnits = xjhxxList.getElementsByClassName("xjhxxUnits");
+        var xjhxxUnitName = xjhxxUnits[0].getElementsByClassName("xjhxxUnitName")[0].textContent.trim();
+        var xjhdz = xjhxxUnits[0].getElementsByClassName("xjhdz")[0].textContent.trim();
+
+        // 提取onclick中的内容
+        var onclickContent = xjhxxList.getAttribute("onclick");
+
+        var xjhxxid = onclickContent.match(/\d+/)[0]
+
+        // 将提取的信息输出到txt文本中
+        // 你可以根据需要将信息拼接成字符串，然后写入到txt文件中
+        // 这里仅作为演示，具体的写入文件操作可能需要根据你的环境和需求进行调整
+        // 示例：将信息拼接成字符串
+        
         outputString +="【" + xjhxxUnitName + "】" + " ";
         outputString +="宣讲会地点：" + xjhdz + "，";
         outputString +="宣讲时间：" + addTwoHoursToTime(timeElement.textContent.trim()) + "\n";
-        outputString +="招聘链接：" + "https://www.job.sjtu.edu.cn/career/xjhxx/view/" + xjhxxid + "\n";
+        outputString +="招聘链接：" + "https://www.job.sjtu.edu.cn/career/xjhxx/view/" + xjhxxid + "\n\n";
     }
 }
+
+outputString = addLineNumbers(outputString);
 
 // 输出至txt文本
 var blob = new Blob([outputString], { type: "text/plain;charset=utf-8" });
@@ -86,4 +85,20 @@ function formatTime(date) {
     return hours + ":" + minutes;
 }
 
-console.log("Script executed!");
+function addLineNumbers(inputString) {
+  // 将字符串按行分割成数组
+  const lines = inputString.split('\n');
+
+  // 遍历数组，从第二行开始添加标号
+  let a = 0;
+  for (let i = 1; i < (lines.length - 1); i=i+3) {
+    a++;
+    lines[i] = String.fromCodePoint(0x245F + a)+`${lines[i]}`;
+  }
+
+  // 将数组合并成一个字符串
+  const resultString = lines.join('\n');
+
+  return resultString;
+}
+
